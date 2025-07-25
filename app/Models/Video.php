@@ -14,6 +14,7 @@ class Video extends Model
         'type',
         'title',
         'url',
+        'thumbnail',
         'view_count',
     ];
 

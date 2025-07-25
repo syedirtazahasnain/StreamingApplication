@@ -13,7 +13,7 @@ class UserController extends Controller
     public function profile($id)
     {
         try {
-            $user = User::select('id', 'name', 'community', 'tag', 'profile_picture', 'user_role')->findOrFail($id);
+            $user = User::select('id', 'name','email', 'community', 'tag', 'profile_picture', 'user_role')->findOrFail($id);
             return success_res(200, 'Profile retrieved successfully', $user);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return error_res(403, 'User not found');
