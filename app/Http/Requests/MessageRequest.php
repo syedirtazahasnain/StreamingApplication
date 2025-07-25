@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class MessageRequest extends FormRequest
 {
     /**
@@ -11,7 +12,7 @@ class MessageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,5 +26,12 @@ class MessageRequest extends FormRequest
             'type' => 'required|in:chat,comment',
             'content' => 'required|string|max:1000',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            error_res(403, 'Validation failed', $validator->errors()->toArray())
+        );
     }
 }
