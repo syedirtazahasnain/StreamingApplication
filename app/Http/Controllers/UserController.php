@@ -12,29 +12,62 @@ class UserController extends Controller
 {
     public function profile($id)
     {
-        $user = User::select('id', 'name', 'community', 'tag')->findOrFail($id);
-        return response()->json($user);
+        try {
+            $user = User::select('id', 'name', 'community', 'tag', 'profile_picture', 'user_role')->findOrFail($id);
+            return success_res(200, 'Profile retrieved successfully', $user);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return error_res(403, 'User not found');
+        } catch (\Exception $e) {
+            return error_res(403, 'Failed to retrieve profile');
+        }
     }
 
     public function follow(Request $request, $videoId)
     {
-        $video = Video::findOrFail($videoId);
+        try {
+            $video = Video::findOrFail($videoId);
+            $existing_subscription = Subscription::where('user_id', auth()->id())
+                ->where('channel_id', $video->user_id)
+                ->first();
 
-        $subscription = Subscription::create([
-            'user_id' => auth()->id(),
-            'channel_id' => $video->user_id,
-        ]);
+            if ($existing_subscription) {
+                return error_res(403, 'Already following this channel');
+            }
 
-        return response()->json($subscription, 201);
+            $subscription = Subscription::create([
+                'user_id' => auth()->id(),
+                'channel_id' => $video->user_id,
+            ]);
+
+            return success_res(200, 'Subscription created successfully', $subscription);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return error_res(403, 'Video not found');
+        } catch (\Exception $e) {
+            return error_res(403, 'Failed to create subscription');
+        }
     }
 
     public function like(Request $request, $videoId)
     {
-        $like = Like::create([
-            'user_id' => auth()->id(),
-            'video_id' => $videoId,
-        ]);
+        try {
+            $existing_like = Like::where('user_id', auth()->id())
+                ->where('video_id', $videoId)
+                ->first();
 
-        return response()->json($like, 201);
+            if ($existing_like) {
+                return error_res(403, 'Already liked this video');
+            }
+
+            $like = Like::create([
+                'user_id' => auth()->id(),
+                'video_id' => $videoId,
+            ]);
+
+            return success_res(200, 'Like created successfully', $like);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return error_res(403, 'Video not found');
+        } catch (\Exception $e) {
+            return error_res(403, 'Failed to create like');
+        }
     }
 }

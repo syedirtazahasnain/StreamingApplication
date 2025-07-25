@@ -11,7 +11,7 @@ use App\Http\Controllers\AnalyticsController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -29,4 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/analytics', [AnalyticsController::class, 'store']);
 
     Route::get('/users/{id}/profile', [UserController::class, 'profile']);
+    Route::post('logout', [AuthController::class, 'logout']);
 });
+
