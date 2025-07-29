@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/videos/{id}', [VideoController::class, 'show']);
     Route::get('/videos/{id}/recommendations', [VideoController::class, 'recommendations']);
 
-    Route::post('/videos/{id}/messages', [ChatController::class, 'store']);
+    Route::any('/videos/{id}/messages', [ChatController::class, 'store']);
     Route::delete('/videos/{videoId}/messages/{messageId}', [ChatController::class, 'destroy'])->middleware('role:admin,mod,{video.user_id}_mod');
 
     Route::post('/videos/{id}/follow', [UserController::class, 'follow']);

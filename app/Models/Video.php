@@ -18,7 +18,7 @@ class Video extends Model
         'view_count',
     ];
 
-     public function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -31,5 +31,12 @@ class Video extends Model
     public function likes()
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function messagesWithUser()
+    {
+        return $this->hasMany(Message::class)
+            ->select('id', 'user_id', 'video_id', 'type', 'content', 'created_at')
+            ->with(['user:id,name']);
     }
 }

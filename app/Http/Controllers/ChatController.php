@@ -15,10 +15,11 @@ class ChatController extends Controller
             $message = Message::create([
                 'user_id' => auth()->id(),
                 'video_id' => $videoId,
-                'type' => $request->type, // chat or comment
+                'type' => $request->type,
                 'content' => $request->content,
             ]);
             broadcast(new MessageSent($message))->toOthers();
+            $message->name = auth()->user()->name;
             return success_res(200, 'Message sent successfully', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return error_res(403, 'Validation failed', $e->errors());
