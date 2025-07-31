@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +31,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $appends = ['color'];
 
     /**
      * Get the attributes that should be cast.
@@ -55,6 +56,11 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
+    public function channels()
+    {
+        return $this->hasMany(Channel::class);
+    }
+
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
@@ -63,5 +69,16 @@ class User extends Authenticatable
     public function likes()
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function getColorAttribute()
+    {
+        if ($this->channels()->exists()) {
+            return 'red';
+        }
+        if ($this->user_role === 'mod') {
+            return 'yellow';
+        }
+        return 'blue';
     }
 }
