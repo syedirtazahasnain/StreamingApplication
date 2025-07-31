@@ -16,6 +16,7 @@ class Video extends Model
         'url',
         'thumbnail',
         'view_count',
+        'description',
     ];
 
     public function user()
@@ -37,6 +38,6 @@ class Video extends Model
     {
         return $this->hasMany(Message::class)
             ->select('id', 'user_id', 'video_id', 'type', 'content', 'created_at')
-            ->with(['user:id,name']);
+            ->with(['user:id,name,user_role,profile_picture']);
     }
 }

@@ -46,7 +46,7 @@ class VideoController extends Controller
     public function show($id)
     {
         try {
-            $video = Video::select('id','user_id','type','title','url','thumbnail','view_count','created_at')->with('user:id,name,email,user_role,profile_picture','messagesWithUser')->findOrFail($id);
+            $video = Video::select('id','user_id','type','title','url','thumbnail','description','view_count','created_at')->with('user:id,name,email,user_role,profile_picture,description','messagesWithUser')->findOrFail($id);
 
             if (!$this->videoService->isValidStream($video->url)) {
                 return error_res(403, 'Invalid stream URL');
