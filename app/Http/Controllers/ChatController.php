@@ -32,7 +32,13 @@ class ChatController extends Controller
     {
         try {
             $message = Message::where('video_id', $videoId)
+                ->with('video.channel')
                 ->findOrFail($messageId);
+
+            if (!$message->canBeDeletedBy(auth()->user())) {
+                return error_res(403, 'You are not authorized to delete this message');
+            }
+
             $message->delete();
             broadcast(new MessageSent($message, true))->toOthers();
             return success_res(200, 'Message deleted');

@@ -25,4 +25,19 @@ class Message extends Model
     {
         return $this->belongsTo(Video::class);
     }
+
+    public function canBeDeletedBy(User $user)
+    {
+        if ($user->user_role === 'admin') {
+            return true;
+        }
+        if (
+            $this->video &&
+            $this->video->channel &&
+            $this->video->channel->user_id === $user->id
+        ) {
+            return true;
+        }
+        return false;
+    }
 }

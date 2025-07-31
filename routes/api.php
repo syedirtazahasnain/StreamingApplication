@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/videos/{id}/recommendations', [VideoController::class, 'recommendations']);
 
     Route::any('/videos/{id}/messages', [ChatController::class, 'store']);
-    Route::delete('/videos/{videoId}/messages/{messageId}', [ChatController::class, 'destroy'])->middleware('role:admin,mod,{video.user_id}_mod');
+    Route::delete('/videos/{videoId}/messages/{messageId}', [ChatController::class, 'destroy']);
 
     Route::post('/videos/{id}/follow', [UserController::class, 'follow']);
     Route::post('/videos/{id}/like', [UserController::class, 'like']);
